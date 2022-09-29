@@ -7,7 +7,7 @@ This document provides description of items that the project decided to prioriti
 be completed in the ranked order. This should serve as a reference point for contributors to understand where 
 the project is going, and help determine if a contribution could be conflicting with some longer term plans.
 
-### How to get involved?
+### How can I get involved?
 
 Our [projects](https://github.com/orgs/uor-framework/projects) show upcoming work for the
 various projects under the organization and is a good way to see what issue are being tackled. 
