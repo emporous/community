@@ -35,8 +35,16 @@ Integration with `pip`:
 3. Define required package management schemas
 4. Implementation
 
-## 1.2 Maven Plugin
+# 2. Package Format Ingestion
 
-The implementation will be completed for a maven plugin when initial
-design and schema development has been completed in the prior task.
+The UOR team is working on collecting metadata for packages hosted in other locations.
+This task focuses on creating a solution to discover new packages and ingest the metadata.
+
+## 2.1 RPM Ingestion
+
+1. Complete initial design proposal and planning
+2. Design relevant schemas
+3. Create integration services for automated publishing
+4. Accept provenance data during publishing
+5. Ingest dependency information
 
