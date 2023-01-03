@@ -1,4 +1,4 @@
-# UOR Technical Proposal
+# Emporous Technical Proposal
 
 # Mission
 
@@ -13,128 +13,126 @@ and external stakeholders.
 
 Traceability of software artifacts in supply chains is a long-standing, but increasingly serious security concern. Some ecosystems have made an effort to provide solutions to enhance the verifiability of software artifacts, but often these solutions are not universally applicable.
 
-The purpose of the UOR initiative is to create a scalable cross-content correlation framework that enhances the traceability of decentralized software artifacts.
+The purpose of the Emporous initiative is to create a scalable cross-content correlation framework that enhances the traceability of decentralized software artifacts.
 
 # Workflow and Critical User Journeys
 
-The mock CLI below describes how a user would interact with a registry using the UOR client. This will also describe workflow for package manager plugins. For the purposes of this example, we will use dnf.
+The mock CLI below describes how a user would interact with a registry using the Emporous client. This will also describe workflow for package manager plugins. For the purposes of this example, we will use dnf.
 
 ## Publishing an Artifact
 
 - From disk input
 ```bash
-uor-client build artifact registry.example.com/test:1.0
-uor-client push registry.example.com/test:1.0 --sign
+emporous-client build artifact registry.example.com/test:1.0
+empurous-client push registry.example.com/test:1.0 --sign
 ```
 - From registry generated manifest
 ```bash
-uor-client store /path/to/manifest registry.example.com/test:1.0
-uor-client push registry.example.com/test:1.0
+emporous-client store /path/to/manifest registry.example.com/test:1.0
+emporous-client push registry.example.com/test:1.0
 ```
 
-## Resolving attribute queries
+## Create an aggregate
 
 ```bash
-export UOR_REGISTRY_CONFIG=registry-config.yaml
-uor-client resolve /path/to/attribute-query
+export EMPOROUS_REGISTRY_CONFIG=registry-config.yaml
+emporous-client create aggregate /path/to/attribute-query
+...
+# The registry returns matching artifacts and the client will adds transitive dependencies.
+{
+  "schemaVersion": 2,
+  "mediaType": "application/vnd.oci.image.index.v1+json",
+  "manifests": [
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "size": 7143,
+      "digest": "sha256:e692418e4cbaf90ca69d05a66403747baa33ee08806650b51fab815ad7fc331f",
+    },
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "attributes": {
+        "application": {
+          "name": "example",
+          "major": 1,
+          "minor": 1,
+          "patch": "latest"
+          "owner": "example@example.com"
+        }
+      }
+    }
+  ]
+}
 ```
 
 ## Create a deployment record
 ```bash
-# Adds links on manifest as is/ This can be used to
-# continuously updated dependencies and create new deployment records.
-uor-client create aggregate /path/to/config 
 
-# Resolve linked attribute queries into manifest descriptor.
-uor-client create aggregate /path/to/config --freeze
+# New or pre-existing aggregates can be used to create deployment records. 
+# The continuous creation of deployment records allows for continuous updates while 
+# having an immutable record that can be used during evaluation and runtime.
 
-# This will generate an immutable deployment record and a corresponding
-# software inventory that can be attached.
-uor-client create deployment-record registry.example.com/test:1.0
+# New 
+emporous-client create aggregate /path/to/config --freeze
+
+# Existing
+emporous-client create deployment-record registry.example.com/test:1.0
+...
+{
+  "schemaVersion": 2,
+  "mediaType": "application/vnd.oci.image.index.v1+json",
+  "manifests": [
+    {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "size": 7143,
+      "digest": "sha256:e692418e4cbaf90ca69d05a66403747baa33ee08806650b51fab815ad7fc331f",
+    },
+     {
+      "mediaType": "application/vnd.oci.image.manifest.v1+json",
+      "size": 7023,
+      "digest": "sha256:ec4b8955958665577945c89419d1af06b5f7636b4ac3da7f12184802ad867736",
+      "attributes": {
+        "transitive": true
+      }
+    },
+  ]
+}
 ```
 
 ## Generate Software Inventory
 ```bash
-uor-client create inventory registry.example.com/test:1.0 --format spdx
+emporous-client create inventory registry.example.com/test:1.0 --format spdx
 ```
 
 ## Consuming an artifact or aggregate
 ```bash
-uor-client pull registry.example.com/test:1.0 --follow-links
+emporous-client pull registry.example.com/test:1.0 --follow-links
 ```
 
 ## Through the App Proxy
 ```bash
 # Start app proxy server with CLI
-uor-client serve /var/run/uor.sock
+emporous-client serve /var/run/emporous.sock
 # With systemd
-systemctl start uor-manager
+systemctl start emporous-manager
 # With dnf plugin
 dnf install httpd
 # Find with fuse driver
-uor-fuse ls
+emporous-fuse ls
 ...
 httpd
 ```
 
+
 # High-Level Plan
 
-## Phases
+## Initial Approach
 
-### POC (Pre-MVP)
-- Schema Validation
-- Attestations
-- Software Inventory Automation
-- Signature Verification
-- Manifest/Blob Signing
-- Registry Attribute Queries
-- Linked Artifacts
-- Aggregates
-### Crawl (MVP)
-- Search Domains
-- Deployment Records
-- Package Manager Compatability (i.e. app proxy)
-- Host Policy Service
-- Enable SLSA Level 2 Compliance
-- Schema Cataloging
-### Walk (Beyond MVP)
-- UOR Native Package Managers
-- Registry Gateway Policy Service
-- Change Management
-- Enable SLSA Level 3 Compliance
-### Run (Beyond MVP)
-- RBAC/ABAC hybrid capability
-- Attribute and Blob Encryption
-- Enable SLSA Level 4 Compliance
+1. Define an initial attribute extension for the OCI distribution specification
+2. Fork an OCI compliant registry and add functionality that will support the distribution specification
+3. Clarify extension specification following lessons learned from registry fork
+4. Develop Emporous client and smart proxy to interact with the attribute endpoint
 
-> Note: SLSA compliance levels would be achieved when UOR is integrated with a hosted build service that produces attestable build metadata.
-
-## Steps
-
-1. Create a spec to serve as an extension of the OCI artifact spec. There will be an option to be compatible with the OCI artifact spec as is.
-2. Define an initial attribute extension for the distribution spec
-3. Fork Quay and add functionality that will support the distribution spec
-4. Develop a local solution that can enable compatibility with v2 registries
-5. Create a policy engine solution that apply logic to operations based on attributes
-6. Clarify extension spec following lessons learned from Quay fork
-
-## Required Components
-
-- Server-side (registry) distribution implementation
-- CLI/Client Libraries
-- Local Storage Solution with embedded database
-- Single tool for service management
-- Services:
-    - Policy Engine 
-      - Host Level Policy Engine
-      - Policy Engine as a Registry Gateway
-    - Artifact Manager
-
-### Upstreams
-- sigstore/cosign
-- in-toto
-- oras
-- anchore syft
+## Components
 
 ## Distribution Spec Changes
 The goals for distribution spec changes is to build an extension to the existing OCI distribution spec to allow for cross-repo/cross-namespace attribute querying.
@@ -142,51 +140,50 @@ The goals for distribution spec changes is to build an extension to the existing
 With query optimization and backward compatability in mind, we have the following requirements:
 - This must retain the V2 structure with standalone blob storage
 - This will need an indexing service to optimize certain types of queries (e.g. attributes)
+
 ### RBAC
 The multi-tenant design of container registries will not change with the addition of attribute queries. Repository-scoped permissions should still be used and when returning artifact results, the result set should be filtered by what is viewable to the user. In other words, owners will be able to choose to make artifacts public.
 ### Query scoping
 On the client side, scoping queries to namespace and repositories will be supported.
 ## CLI/Client Libraries
 We have existing CLI and library code bases that manage single and linked artifacts. These will continue to be used to publish single artifact and manage local storage. The CLI/libraries will be extended to interface with the proposed API changes.
-## Local Storage Solution
-- V2 Compatability
-- Mimics V3 functionality using an embedded database
-- Descriptors are stored in the database and used to create aggregates that can be published as a single unit.
-## Service Manager
-- Manages running gRPC services
-### Service - Policy Engine
-> Question: Could this be an OPA Plugin?
+## Service Layer
+The service layer will act as a smart proxy in front the OCI-compliant registry that will interact with clients.
 
-Component information or any attestations on content add little to no value if that information is not used for security gating. The policy engine allows users to configure and enforce policy based on the existence of these artifacts and their contents.
+## Emporous Concepts
 
-### Service - Artifact Manager
-The purpose of the artifact manager service is to act as a proxy for existing package managers and installation tooling. This can also be used for clients that do not have knowledge of artifact publishing and manipulation.
+### Attributes
+OCI already has the concept of annotations. However, it does not allow for hierarchical or typed information stored. Attributes would be a JSON representation of metadata associated with an
+artifact that can have a defined schema or be schemaless. Attributes would be used for searching, filtering, and selection. An example of this approach would be Kubernetes annotation vs labels.
+Both fields are supported, but only labels are indexed. JSON formatted metadata allows for JSON schema to be used for data validation and generation. This can be useful when correlating data like [SLSA provenance](https://slsa.dev/provenance/v0.1#schema) or [CVE data](https://github.com/CVEProject/automation-working-group/blob/master/cve_json_schema/DRAFT-JSON-file-format-v4.md).
 
-## UOR Concepts
+> Note: OCI Annotations can be used with JSON-formatted string values, but this approach can lead the manifest to become less readable.
 
-### Attribute Schemas
+**Why are attributes stored in the manifest?**  
+Attribute must be factored into the content address of the artifact to ensure they cannot be changed after publishing.
 
-Schema Type is part of an attribute set. Each schema has an id and in order for an artifact to be compliant, it must have schema type and value declarations that matches the validating schema. Referencing schema by the ID in the manifest allows the schema source to come from anywhere (i.e. remote reference, a local file, structs in code).
+Attributes may not only hold descriptive data about content, but compliance, build, or runtime information.
+In this use-case, having immutable artifact attributes ensure that deployments are deterministic and helps to mitigate the risk of an attribute-based TOCTOU attack or metadata-based attacks.
 
-Schema enables consistency and shared attribute meaning for artifact publishers. Schemas can also be used in the generation of other configuration files such as a dataset configuration file or an attribute query.
+#### Attribute grouping
+Attributes can be grouped using JSON objects. Emporous will group the attribute using the schema ID as the root key. This allows for additional filtering by schema, if desired.
+Attributes grouping also adds support for individual signing options (e.g. DSSE envelopes) much like software attestation bundles.
 
-Each published schema will be discoverable by its attributes which will identification, description, and category.
+### Dynamic Schema Registration
 
-#### Core Schema
+Attribute schemas can be used at artifact build time to ensure that the attributes provided and gathered are formatted as expected. JSON Schema would be published just like any other
+content which makes them discoverable through the attributes API.
 
-UOR has a core schema that will be validated during publish time. All artifacts will require this information to be consumable. Part of the core schema include component information.
-
-### Multi-Schema
-
-Option 1: The schema type would be an array of schema IDs as defined by the publisher.
-Option 2: The publisher defines core schema and schemas can be registered with the Artifacts Manager to add context to an operation. The schemas would be added to a schema pool along with the core schema.
-Option 3: Combination of both.
+#### Static Schema Validation
+In this instance registry would still validate each manifest against the OCI image spec and any additional schema validation would be a registry specific implementation. The goal is
+to change the OCI image spec to require registries to be attribute-aware, not attribute schema-aware. 
 
 ### Aggregates
 
 The attribute query endpoint can be used to automate building application from existing artifacts. The endpoint will resolve an attribute query to an index manifest of matching descriptors that can be used for artifact publishing.
 
-To enable efficiency in this workflow, it would be best practice to only publish one component or file per artifact. However, if an artifact is published with more than one file, the UOR client will allow attribute filtering on individual artifacts.
+To enable efficiency in this workflow, it would be best practice to only publish one component or file per artifact. 
+However, if an artifact is published with more than one file, the Emporous client will allow attribute filtering on individual artifacts.
 
 ### Search Domains
 
@@ -196,15 +193,15 @@ used to add the registry will the required content to a discovered zone.
 
 ### Reference Types/Links
 
+Emporous artifacts must be able to link to other artifacts.  Information on application dependencies is just one of many examples of this. 
+Below, we examine a few techniques for achieving artifact linking.
+
 #### OCI Reference types
 
-According to the OCI Referrers spec, referrers using a tag schema to declare relationships in the
-`subject` field. When querying the referrer's API, an index manifest response is generated. This type of workflow could be used when creating supporting artifacts for artifact that would only ever reference
-one artifact as the parent.
+Referrers are required to employ a tag schema to specify associations in the `subject` field, as per the [OCI Referrers API spec](https://github.com/opencontainers/distribution-spec/blob/main/spec.md#listing-referrers). An index manifest answer is produced in response to an API request for the referrer.
+When developing supporting artifacts for an artifact that would only ever refer to one artifact as the parent, this kind of approach may be used.
 
-An important note here is that a referring manifest can only ever have one subject. Meaning this relationship takes the form of a tree structure.
-
-##### Use Case
+##### Example Use Case
 
 ```mermaid
 graph LR;
@@ -215,11 +212,11 @@ D[Other] --> B
 
 #### Artifact Link
 
-Links are a UOR specific type and differ from references because they define relationships that can be cross repo. These links can also form a DAG structure.
-
-https://github.com/uor-framework/uor-client-go/blob/main/docs/design/nodes.md#linked-collection
+Links are an Emporous specific type that differs from referrers in that they define cross-repo relationships and many-to-many relationships between artifacts.
 
 #### Methods
+
+Below are two methods can be used to link artifacts.
 
 - Option 1: We could link artifact references directory in the artifact spec.
     - Pros
@@ -233,7 +230,7 @@ https://github.com/uor-framework/uor-client-go/blob/main/docs/design/nodes.md#li
     - Cons
         - Another manifest reference will have to be maintained. Scaling this could get complex from a lifecycle management perspective.
 
-##### Use Cases
+##### Example Use Cases
 
 ```mermaid
 graph LR;
@@ -250,180 +247,62 @@ A[CVE Artifact]--Links-->B[CPE Attribute]
 B--Resolve-->C[Artifact Digest Reference]
 ```
 
-## Deployment Records
-Fully resolved immutable artifact indexes
+### Deployment Records
+Fully resolved immutable artifact indexes. These can be created from aggregates and used at runtime to pull artifact or groups of artifact with by digest.
 
-## Supply Chain Security Areas
+## Trusted Content
 
 ### Immutable/Mutable References
 
-Our goal is to make artifacts tamper-proof without relying solely on
-immutable references. Artifacts will, of course, always have a digest
-but pulling by digest would not be a requirement to ensure the artifact contains the expected content.
+Similar to how container images are currently referenced, mutable and immutable references will be available for artifacts as well. However, instead of
+tags, sets of attributes describing content will be used to pull artifacts dynamically. This allows a very specific set of criteria to be used when resolving to digest.
 
-**Why don't we want to use immutable references as the main security control?**
+#### Example
 
-Using immutable references make upgrading more software difficult. Without signatures, using immutable references just shifts risk from one party to another because using immutable references do not provide proof of the publisher identity (i.e. non-repudiation).
-
-Where is immutable reference usage important?
-
-- Build reproducibility
-- TOCTOU (Time of Check, Time of Use)
-
-Solution: [Deployment Records](#Deployment Records)
+```bash
+# Query for patches of example application version 1.1.X signed by Example Company
+{
+  "name": "example-application",
+  "major": 1,
+  "minor": 1,
+  "signer": "Example Company",
+  "owner": "example-company@example.com"
+}
+```
 
 ### Signatures
-Signatures are a better way to ensure the artifact has not been
-tampered with and come from a trusted entity. Blobs must be individually signed so that they can be referenced as standalone descriptors. This functionality will come from the use of cosign which already supports OCI artifacts.
+Digital signatures ensure the artifact has not been
+tampered with and come from a trusted entity. 
+Emporous MUST support manifest, blob, and attribute signing.
 
 ### Software Inventory
 
-Software inventory fields are part of the core UOR schema and are required to be present in the manifest attributes. 
-This information will be listed in artifact manifest attributes to assure they are queryable with the attribute searching API.
-Software inventory information will be dynamically constructed for aggregates based on linked manifests and attribute results.
-The software inventory will contain the required information for conversion into commonly adopted formats like SPDX and CycloneDX.
-
-Signed Inventories - Each artifact will contain component information that will be stored in attributes and attestation predicate.
-The artifact and attestation will be signed.
-
-**Why are the attributes stored in the manifest and not as a separate artifact?**
-    - Where attributes are stored should depend on their rate of change. Storing core attributes like component and build metadata in the manifest ensures that if they are changed the digest will change.
-    - It will result in less calls to the referrer's API
+Software inventory fields are required in the manifest attributes and are part of the core Emporous schema.
+This information will be stored in artifact manifest attributes so that it can be accessed via the attribute searching API.
+Based on linked manifests and attribute results, software inventory information will be dynamically constructed for aggregates.
+The software inventory will include the necessary information for conversion into commonly used formats such as SPDX and CycloneDX.
 
 #### Streamlined Access to Software Inventories
 
 A requirement for security teams that manage many products is streamlined software inventory management.
 This is possible with the proposed solution by allowing users to configure search domains (e.g. queryable registry endpoints) for content. Using the component schema and product schema, queries can be constructed to easily find application specific software inventories. This allows the storage of components to remain decentralized for distributed teams while still providing one method for content retrieval.
 
-### Attestations
-We will support in-toto attestation.
-One core attestation during artifact publishing will include the artifact as the statement and the attributes as the predicate.
-More information [here](https://github.com/in-toto/attestation/blob/main/spec/README.md)
+### Provenance
 
-Attestations from user input will be accepted during artifact publishing.
+Emporous can support attribute in JSON format which can conform the SLSA provenance schema. 
 
-Tooling will be required to fail closed if attestations are not present.
+### CVE 
 
-### Vulnerability Management
-- Attribute queries
-- Auto-upgrades
-- CVE Linking
-
-### Transparency Logging
-> TODO
-
-# Diagrams
-
-## System Context
-
-```mermaid
-graph LR;
-A[UOR User]-->B[Client]
-B --publishing and retrieval--> C[Artifact Service]
-B --policy enforcement--> D[Host Policy Service]
-C --storage and queries--> E[Registry]
-E --> F[Organization Policy Service]
-```
-
-
-```mermaid
-sequenceDiagram;
-participant Client
-participant Host Policy Service
-participant Artifact Service
-participant Registry
-Client->>Host Policy Service: Check attributes
-Host Policy Service-->>Client: Artifact Meets Criteria
-Client->>Artifact Service: Publishing Operation
-Artifact Service->>Registry: Publishing to Registry
-Registry-->>Artifact Service: Success
-Artifact Service-->>Client: Success
-```
-
-```mermaid
-sequenceDiagram;
-participant Client
-participant Organization Policy Service
-participant Artifact Service
-participant Registry
-Client->>Artifact Service: Publishing Operation
-Artifact Service->>Registry: Publishing to Registry
-Registry->>Organization Policy Service: Check attributes
-Organization Policy Service-->>Registry: Meets criteria
-Registry->>Registry: Store artifact
-Registry-->Artifact Service: Success
-Artifact Service-->>Client: Success
-```
-
-### Client
-
-#### Searching
-
-```mermaid
-sequenceDiagram;
-participant User
-participant Client
-participant Registry
-User->>Client: Sending attribute query
-Client->>Client: Reconstruct query for Registry API
-Note left of Client: Use the search domain to determine which order to query the registries.
-Client->>Registry: Send modified query
-Registry-->>Client: Constructed and fully resolved aggregate
-Client-->>User: Merged query results from search domain
-```
-
-### Registry
-
-#### Components
-
-##### Container Registry Service
-
-#### Workflows
-
-##### Publishing
-```mermaid
-sequenceDiagram;
-participant Client
-participant API Endpoint
-participant Ingestion Service
-participant Manifest Scraper
-participant Database
-Client->>API Endpoint: User Artifact
-API Endpoint->>Ingestion Service: User Collectin
-Ingestion Service-->>API Endpoint: Writen to disk
-API Endpoint-->>Client: Written to digest X
-Note right of Manifest Scraper: Triggered by hook or schedule?
-Manifest Scraper->>Manifest Scraper: Scrape attributes from manifest
-Manifest Scraper->>Database: Write attribute data to database
-Note right of Manifest Scraper: Optional Component
-```
-
-##### Consumption
-```mermaid
-sequenceDiagram;
-participant Client
-participant Attributes API
-participant Database
-Client->>Attributes API: Attribute Query
-Attributes API->>Database: Database Query
-Database-->>Attributes API: Result Set
-Attributes API-->>Client: Aggregate
-```
-
-### Artifact Service
-> TODO
-
-### Policy Service
-> TODO
+CVE can be published as an artifact just like any content and will be discoverable with the attributes API. They can link to other content by digest or attributes just
+like other artifacts.
 
 # Glossary
 
 - Artifact - A file represented as an OCI artifact schema: the properties and data types that can be specified within an artifact.
 - Aggregates - An aggregate that is constructed from attribute queries from existing artifacts to form a larger application.
 - Dataset Configuration - A configuration file used during artifact publishing to configure file attributes, associate schema, and link existing artifacts.
-- Attribute Query - A configuration file used with the UOR CLI that defines key and values to filter artifact contents during pulling operations.
+- Attribute Query - A configuration file used with the Emporous CLI that defines key and values to filter artifact contents during pulling operations.
 - Software Inventory - An inventory list of all the software artifacts that comprise an artifact or aggregate.
-- Multi-Schema Artifact - An artifact with an attribute set that satisfies multiple attribute schemas.
 
 # Reference
 
