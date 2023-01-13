@@ -135,52 +135,52 @@ httpd
 ## Components
 
 ## Distribution Spec Changes
-The goals for distribution spec changes is to build an extension to the existing OCI distribution spec to allow for cross-repo/cross-namespace attribute querying.
+The goals for distribution spec changes are to build an extension to the existing OCI distribution spec to allow for cross-repo/cross-namespace attribute querying.
 
-With query optimization and backward compatability in mind, we have the following requirements:
+With query optimization and backward compatibility in mind, we have the following requirements:
 - This must retain the V2 structure with standalone blob storage
 - This will need an indexing service to optimize certain types of queries (e.g. attributes)
 
 ### RBAC
 The multi-tenant design of container registries will not change with the addition of attribute queries. Repository-scoped permissions should still be used and when returning artifact results, the result set should be filtered by what is viewable to the user. In other words, owners will be able to choose to make artifacts public.
 ### Query scoping
-On the client side, scoping queries to namespace and repositories will be supported.
+On the client side, scoping queries to namespaces and repositories will be supported.
 ## CLI/Client Libraries
-We have existing CLI and library code bases that manage single and linked artifacts. These will continue to be used to publish single artifact and manage local storage. The CLI/libraries will be extended to interface with the proposed API changes.
+We have existing CLI and library code bases that manage single and linked artifacts. These will continue to be used to publish single artifacts and manage local storage. The CLI/libraries will be extended to interface with the proposed API changes.
 ## Service Layer
-The service layer will act as a smart proxy in front the OCI-compliant registry that will interact with clients.
+The service layer will act as a smart proxy in front of the OCI-compliant registry that will interact with clients.
 
 ## Emporous Concepts
 
 ### Attributes
-OCI already has the concept of annotations. However, it does not allow for hierarchical or typed information stored. Attributes would be a JSON representation of metadata associated with an
-artifact that can have a defined schema or be schemaless. Attributes would be used for searching, filtering, and selection. An example of this approach would be Kubernetes annotation vs labels.
-Both fields are supported, but only labels are indexed. JSON formatted metadata allows for JSON schema to be used for data validation and generation. This can be useful when correlating data like [SLSA provenance](https://slsa.dev/provenance/v0.1#schema) or [CVE data](https://github.com/CVEProject/automation-working-group/blob/master/cve_json_schema/DRAFT-JSON-file-format-v4.md).
+OCI already has the concept of annotations. However, it does not allow for hierarchical or typed information stored. Attributes are a JSON representation of metadata associated with an
+artifact that can have a defined schema or be schemaless. Attributes would be used for searching, filtering, and selection. An example of this approach would be Kubernetes annotation vs. labels.
+Both fields are supported, but only labels are indexed. JSON-formatted metadata allows for JSON schema to be used for data validation and generation. This can be useful when correlating data like [SLSA provenance](https://slsa.dev/provenance/v0.1#schema) or [CVE data](https://github.com/CVEProject/automation-working-group/blob/master/cve_json_schema/DRAFT-JSON-file-format-v4.md).
 
-> Note: OCI Annotations can be used with JSON-formatted string values, but this approach can lead the manifest to become less readable.
+> Note: OCI Annotations can be used with JSON-formatted string values, but this approach can make the manifest less readable.
 
 **Why are attributes stored in the manifest?**  
-Attribute must be factored into the content address of the artifact to ensure they cannot be changed after publishing.
+Attributes must be factored into the content address of the artifact to ensure they cannot be changed after publishing.
 
 Attributes may not only hold descriptive data about content, but compliance, build, or runtime information.
-In this use-case, having immutable artifact attributes ensure that deployments are deterministic and helps to mitigate the risk of an attribute-based TOCTOU attack or metadata-based attacks.
+In this use-case, having immutable artifact attributes ensure that deployments are deterministic and helps mitigate the risk of attribute-based TOCTOU attacks or metadata-based attacks.
 
 #### Attribute grouping
 Attributes can be grouped using JSON objects. Emporous will group the attribute using the schema ID as the root key. This allows for additional filtering by schema, if desired.
-Attributes grouping also adds support for individual signing options (e.g. DSSE envelopes) much like software attestation bundles.
+Attribute grouping also adds support for individual signing options (e.g. DSSE envelopes) much like software attestation bundles.
 
 ### Dynamic Schema Registration
 
 Attribute schemas can be used at artifact build time to ensure that the attributes provided and gathered are formatted as expected. JSON Schema would be published just like any other
-content which makes them discoverable through the attributes API.
+content, which makes them discoverable through the attributes API.
 
 #### Static Schema Validation
-In this instance registry would still validate each manifest against the OCI image spec and any additional schema validation would be a registry specific implementation. The goal is
+In this instance, the registry would still validate each manifest against the OCI image spec and any additional schema validation would be a registry specific implementation. The goal is
 to change the OCI image spec to require registries to be attribute-aware, not attribute schema-aware. 
 
 ### Aggregates
 
-The attribute query endpoint can be used to automate building application from existing artifacts. The endpoint will resolve an attribute query to an index manifest of matching descriptors that can be used for artifact publishing.
+The attribute query endpoint can be used to automate building applications from existing artifacts. The endpoint will resolve an attribute query to an index manifest of matching descriptors that can be used for artifact publishing.
 
 To enable efficiency in this workflow, it would be best practice to only publish one component or file per artifact. 
 However, if an artifact is published with more than one file, the Emporous client will allow attribute filtering on individual artifacts.
@@ -189,7 +189,7 @@ However, if an artifact is published with more than one file, the Emporous clien
 
 A content query can be sent to multiple OCI registries. A user can specify which registries to query and prioritize registry results.
 If an artifact or aggregate references a link that cannot be resolved by any registry in the search domain, a field called `registryHint` will be
-used to add the registry will the required content to a discovered zone.
+used to add the registry with the required content to a discovered zone.
 
 ### Reference Types/Links
 
@@ -216,13 +216,13 @@ Links are an Emporous specific type that differs from referrers in that they def
 
 #### Methods
 
-Below are two methods can be used to link artifacts.
+Below are two methods that can be used to link artifacts.
 
 - Option 1: We could link artifact references directory in the artifact spec.
     - Pros
         - Allows the publisher to define artifact links without additional steps.
     - Cons
-        - Rate of Change: Will an artifact change everytime a link does?
+        - Rate of Change: Will an artifact change every time a link does?
         - Non-publisher cannot create artifact links
 - Option 2: Maintain an index manifest in each repo to track relationships. This would be created from running an attribute query. It would produce an index of attribute resolved links.
     - Pros
@@ -248,7 +248,7 @@ B--Resolve-->C[Artifact Digest Reference]
 ```
 
 ### Deployment Records
-Fully resolved immutable artifact indexes. These can be created from aggregates and used at runtime to pull artifact or groups of artifact with by digest.
+Fully resolved immutable artifact indexes. These can be created from aggregates and used at runtime to pull artifacts or groups of artifacts with by digest.
 
 ## Trusted Content
 
@@ -272,7 +272,7 @@ tags, sets of attributes describing content will be used to pull artifacts dynam
 
 ### Signatures
 Digital signatures ensure the artifact has not been
-tampered with and come from a trusted entity. 
+tampered with and comes from a trusted entity. 
 Emporous MUST support manifest, blob, and attribute signing.
 
 ### Software Inventory
@@ -289,7 +289,7 @@ This is possible with the proposed solution by allowing users to configure searc
 
 ### Provenance
 
-Emporous can support attribute in JSON format which can conform the SLSA provenance schema. 
+Emporous can support attributes in JSON format which can conform the SLSA provenance schema. 
 
 ### CVE 
 
