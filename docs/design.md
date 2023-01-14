@@ -146,7 +146,7 @@ The multi-tenant design of container registries will not change with the additio
 ### Query scoping
 On the client side, scoping queries to namespaces and repositories will be supported.
 ## CLI/Client Libraries
-We have existing CLI and library code bases that manage single and linked artifacts. These will continue to be used to publish single artifacts and manage local storage. The CLI/libraries will be extended to interface with the proposed API changes.
+We have existing CLI and library code bases that manage single and linked artifacts. The CLI/libraries will be extended to interface with the proposed API changes.
 ## Service Layer
 The service layer will act as a smart proxy in front of the OCI-compliant registry that will interact with clients.
 
@@ -259,8 +259,8 @@ tags, sets of attributes describing content will be used to pull artifacts dynam
 
 #### Example
 
+Query for patches of example application version 1.1.X signed by Example Company
 ```json
-# Query for patches of example application version 1.1.X signed by Example Company
 {
   "name": "example-application",
   "major": 1,
@@ -271,9 +271,9 @@ tags, sets of attributes describing content will be used to pull artifacts dynam
 ```
 
 ### Signatures
-Digital signatures ensure the artifact has not been
-tampered with and comes from a trusted entity. 
-Emporous MUST support manifest, blob, and attribute signing.
+Artifact and metadata signing ensures that the content has not been tampered with and that it came from the person or entity that it claims to come from.
+Manifest, blob, and attribute signing and verification will be supported by Emporous.
+The attributes API can be used to discover signature information in order to filter untrusted sources from responses or retrieve information for content signed with a specific key.
 
 ### Software Inventory
 
@@ -289,12 +289,14 @@ This is possible with the proposed solution by allowing users to configure searc
 
 ### Provenance
 
-Emporous can support attributes in JSON format which can conform the SLSA provenance schema. 
+Emporous can support attributes in JSON format which can conform to the [SLSA provenance schema](https://slsa.dev/provenance/v0.2#schema).
+This allows information on how software artifacts are built and its origin to be signed and discovered through the attributes API.
 
 ### CVE 
 
-CVE can be published as an artifact just like any content and will be discoverable with the attributes API. They can link to other content by digest or attributes just
-like other artifacts.
+[CVE](https://cve.mitre.org/) data can be published as an artifact just like any other content and will be discoverable with the attributes API. 
+These artifacts can link to other content by digest or attributes. 
+Linking CVEs to existing artifact this way can allow for dynamic CVE discovery without storing static scan results that can expire.
 
 # Glossary
 
