@@ -32,7 +32,7 @@ emporous-client store /path/to/manifest registry.example.com/test:1.0
 emporous-client push registry.example.com/test:1.0
 ```
 
-## Create an aggregate
+## Create an (aggregate)[#Aggregate]
 
 ```bash
 export EMPOROUS_REGISTRY_CONFIG=registry-config.yaml
@@ -127,7 +127,7 @@ httpd
 
 ## Initial Approach
 
-1. Define an initial attribute extension for the OCI distribution specification
+1. Define an initial attribute API extension for the OCI distribution specification that turns a registry into a single searchable namespace. 
 2. Fork an OCI compliant registry and add functionality that will support the distribution specification
 3. Clarify extension specification following lessons learned from registry fork
 4. Develop Emporous client and smart proxy to interact with the attribute endpoint
@@ -162,7 +162,7 @@ Both fields are supported, but only labels are indexed. JSON-formatted metadata 
 **Why are attributes stored in the manifest?**  
 Attributes must be factored into the content address of the artifact to ensure they cannot be changed after publishing.
 
-Attributes may not only hold descriptive data about content, but compliance, build, or runtime information.
+Attributes may not only hold descriptive data about content, but also compliance, build, or runtime information.
 In this use-case, having immutable artifact attributes ensure that deployments are deterministic and helps mitigate the risk of attribute-based TOCTOU attacks or metadata-based attacks.
 
 #### Attribute grouping
@@ -212,7 +212,7 @@ D[Other] --> B
 
 #### Artifact Link
 
-Links are an Emporous specific type that differs from referrers in that they define cross-repo relationships and many-to-many relationships between artifacts.
+Links are an Emporous specific type that differs from referrers in that they define cross-namespace relationships and many-to-many relationships between artifacts.
 
 #### Methods
 
@@ -259,7 +259,7 @@ tags, sets of attributes describing content will be used to pull artifacts dynam
 
 #### Example
 
-```bash
+```json
 # Query for patches of example application version 1.1.X signed by Example Company
 {
   "name": "example-application",
