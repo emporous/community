@@ -32,7 +32,7 @@ emporous-client store /path/to/manifest registry.example.com/test:1.0
 emporous-client push registry.example.com/test:1.0
 ```
 
-## Create an (aggregate)[#Aggregate]
+## Create an [aggregate](#Aggregates)
 
 ```bash
 export EMPOROUS_REGISTRY_CONFIG=registry-config.yaml
@@ -64,7 +64,7 @@ emporous-client create aggregate /path/to/attribute-query
 }
 ```
 
-## Create a deployment record
+## Create a [deployment record](#Deployment Records)
 ```bash
 
 # New or pre-existing aggregates can be used to create deployment records. 
