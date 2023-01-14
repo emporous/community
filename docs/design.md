@@ -146,7 +146,7 @@ The multi-tenant design of container registries will not change with the additio
 ### Query scoping
 On the client side, scoping queries to namespaces and repositories will be supported.
 ## CLI/Client Libraries
-We have existing CLI and library code bases that manage single and linked artifacts. The CLI/libraries will be extended to interface with the proposed API changes.
+We have existing CLI and library code bases that manage artifact publishing and retrieval. The CLI/libraries will be extended to interface with the proposed API changes.
 ## Service Layer
 The service layer will act as a smart proxy in front of the OCI-compliant registry that will interact with clients.
 
