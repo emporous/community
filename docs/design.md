@@ -64,7 +64,7 @@ emporous-client create aggregate /path/to/attribute-query
 }
 ```
 
-## Create a [deployment record](#Deployment Records)
+## Create a deployment record
 ```bash
 
 # New or pre-existing aggregates can be used to create deployment records. 
