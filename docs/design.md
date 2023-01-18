@@ -23,20 +23,20 @@ The mock CLI below describes how a user would interact with a registry using the
 
 - From disk input
 ```bash
-emporous-client build artifact registry.example.com/test:1.0
-empurous-client push registry.example.com/test:1.0 --sign
+emporous build artifact registry.example.com/test:1.0
+empurous push registry.example.com/test:1.0 --sign
 ```
 - From registry generated manifest
 ```bash
-emporous-client store /path/to/manifest registry.example.com/test:1.0
-emporous-client push registry.example.com/test:1.0
+emporous store /path/to/manifest registry.example.com/test:1.0
+emporous push registry.example.com/test:1.0
 ```
 
 ## Create an [aggregate](#Aggregates)
 
 ```bash
 export EMPOROUS_REGISTRY_CONFIG=registry-config.yaml
-emporous-client create aggregate /path/to/attribute-query
+emporous create aggregate /path/to/attribute-query
 ...
 # The registry returns matching artifacts and the client will adds transitive dependencies.
 {
@@ -72,10 +72,10 @@ emporous-client create aggregate /path/to/attribute-query
 # having an immutable record that can be used during evaluation and runtime.
 
 # New 
-emporous-client create aggregate /path/to/config --freeze
+emporous create aggregate /path/to/config --freeze
 
 # Existing
-emporous-client create deployment-record registry.example.com/test:1.0
+emporous create deployment-record registry.example.com/test:1.0
 ...
 {
   "schemaVersion": 2,
@@ -100,18 +100,18 @@ emporous-client create deployment-record registry.example.com/test:1.0
 
 ## Generate Software Inventory
 ```bash
-emporous-client create inventory registry.example.com/test:1.0 --format spdx
+emporous create inventory registry.example.com/test:1.0 --format spdx
 ```
 
 ## Consuming an artifact or aggregate
 ```bash
-emporous-client pull registry.example.com/test:1.0 --follow-links
+emporous pull registry.example.com/test:1.0 --follow-links
 ```
 
 ## Through the App Proxy
 ```bash
 # Start app proxy server with CLI
-emporous-client serve /var/run/emporous.sock
+emporous serve /var/run/emporous.sock
 # With systemd
 systemctl start emporous-manager
 # With dnf plugin
