@@ -1,3 +1,9 @@
+# Emporous Community 
+
+Welcome to the Emporous community!
+
+This is the place to begin learning about and participating in the Emporous project.
+
 # About Us
 
 ## What is Emporous?
@@ -21,4 +27,21 @@ Emporous is a smart proxy for container registries that enables organizations to
 4. Test and evaluate the system to ensure that metadata is discoverable and verifiable.
 5. Integrate the system into existing container registry infrastructure and standards.
 
-## Get started using the Emporous client libraries and CLI [here](https://github.com/emporous/emporous-go) 
+## Communication
+
+- Join our Google [group](https://groups.google.com/g/emporous)
+- Chat with Emporous users and developers on [CNCF slack](https://slack.cncf.io/) at `#emporous` channel
+- Follow us on [Twitter](https://twitter.com/Emporous)
+
+## Governance
+
+To learn about the Emporous governance, visit the [governance](governance) directory.
+
+## Contributing
+
+All are welcome to contribute to this project and our efforts.
+To learn more on how to contribute, visit the [contributors](contributors) directory.
+
+
+
+
