@@ -1,6 +1,5 @@
-# UOR-Framework
+# emporous-docs
 
-Future repo of UOR Framework and Specification documentation. 
+This repository contains organization-level Markdown documentation that can be referenced by the website or other repositories.
 
-
-## Get started using the UOR client libraries and CLI [here](https://github.com/uor-framework) 
+Get started using the Emporous client libraries and CLI [here](https://github.com/emporous/emporous-go) 
