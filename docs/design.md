@@ -290,7 +290,8 @@ This is possible with the proposed solution by allowing users to configure searc
 ### Provenance
 
 Emporous can support attributes in JSON format which can conform to the [SLSA provenance schema](https://slsa.dev/provenance/v0.2#schema).
-This allows information on how software artifacts are built and its origin to be signed and discovered through the attributes API.
+This allows information on how software artifacts are built and its origin to be signed and discovered through the attributes API. 
+Emporous enables this information to be stored with all artifact nodes in a dependency tree, allowing for recursive SLSA verification.
 
 ### CVE 
 
