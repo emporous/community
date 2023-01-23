@@ -159,15 +159,11 @@ Both fields are supported, but only labels are indexed. JSON-formatted metadata 
 
 > Note: OCI Annotations can be used with JSON-formatted string values, but this approach can make the manifest less readable.
 
-**Why are attributes stored in the manifest?**  
+**Why are attributes referenced in the manifest?**  
 Attributes must be factored into the content address of the artifact to ensure they cannot be changed after publishing.
 
 Attributes may not only hold descriptive data about content, but also compliance, build, or runtime information.
 In this use-case, having immutable artifact attributes ensure that deployments are deterministic and helps mitigate the risk of attribute-based [TOCTOU](https://en.wikipedia.org/wiki/Time-of-check_to_time-of-use) attacks or metadata-based attacks.
-
-#### Attribute grouping
-Attributes can be grouped using JSON objects. Emporous will group the attribute using the schema ID as the root key. This allows for additional filtering by schema, if desired.
-Attribute grouping also adds support for individual signing options (e.g. DSSE envelopes) much like software attestation bundles.
 
 ### Dynamic Schema Registration
 
