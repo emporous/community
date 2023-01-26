@@ -2,7 +2,7 @@
 
 ### New contributors
 
-Existing members should welcome [new contributors](../contributors/contributing.md) to the community, assist with PR workflow, and direct them to relevant documentation and communication channels.
+Existing members should welcome [new contributors](../contributors/CONTRIBUTING.md) to the community, assist with PR workflow, and direct them to relevant documentation and communication channels.
 
 ## Member
 Members are continuously active contributors in the community. 

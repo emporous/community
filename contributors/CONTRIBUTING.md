@@ -12,7 +12,7 @@ Thank you for investing your time in contributing to the Emporous project!
 
 If you are not sure how to get started reach out on Slack or through the Google group to get suggestions from a [maintainer](https://github.com/emporous/.github/blob/main/peribolos.yaml) or [community member](https://github.com/emporous/.github/blob/main/peribolos.yaml).
 
-First contributions could be
+First contributions could be:
 
 - Improving the documentation
 - Adding test coverage
@@ -40,7 +40,7 @@ At least one reviewer from the `CODEOWNERS` file must approve to merge a pull re
 - Write clear and meaningful git commit messages.
 - Follow the conventional commit [specification](https://www.conventionalcommits.org/en/v1.0.0/).
 - When applicable, breaking units of works into separate commits or pull requests.
-- Each pull request should be tied to a GitHub issue and specified in the pull-request description.
+- Each pull request should be tied to a GitHub issue and specified in the pull request description.
 - If a change is small, please squash commits for a cleaner history.
 
 > Keep in mind, each individual project may have its own additional contributing guides. If any guidelines conflict with this document, please open a GitHub issue on the project repository.
