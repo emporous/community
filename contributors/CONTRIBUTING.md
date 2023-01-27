@@ -10,7 +10,7 @@ Thank you for investing your time in contributing to the Emporous project!
 
 ### Where to Start
 
-If you are not sure how to get started reach out on Slack or through the Google group to get suggestions from a [maintainer](https://github.com/emporous/.github/blob/main/peribolos.yaml) or [community member](https://github.com/emporous/.github/blob/main/peribolos.yaml).
+If you are not sure how to get started, reach out on Slack or through the Google group to get suggestions from a [maintainer](https://github.com/emporous/.github/blob/main/peribolos.yaml) or [community member](https://github.com/emporous/.github/blob/main/peribolos.yaml).
 
 First contributions could be:
 
@@ -20,8 +20,7 @@ First contributions could be:
 
 ### Contributing to Projects
 
-When contributing to the community project, please first discuss the change you wish to make via GitHub Issues or Discussions
-as to ensure the change aligns with the project's long-term plans.
+When contributing to the community project, please first discuss the change you want to make through GitHub Issues or Discussions to ensure it aligns with the project's long-term plans.
 
 ## Opening a Pull Request
 
