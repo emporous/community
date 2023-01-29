@@ -194,8 +194,8 @@ Below, we examine a few techniques for achieving artifact linking.
 
 #### OCI Reference types
 
-Referrers are required to employ a tag schema to specify associations in the `subject` field, as per the [OCI Referrers API spec](https://github.com/opencontainers/distribution-spec/blob/main/spec.md#listing-referrers). An index manifest answer is produced in response to an API request for the referrer.
-When developing supporting artifacts for an artifact that would only ever refer to one artifact as the parent, this kind of approach may be used.
+Referring artifacts specify associations in the `subject` field , as per the [OCI Referrers API spec](https://github.com/opencontainers/distribution-spec/blob/main/spec.md#listing-referrers).
+When developing supporting artifacts that would only ever refer to one artifact as the parent, this kind of approach may be used.
 
 ##### Example Use Case
 
