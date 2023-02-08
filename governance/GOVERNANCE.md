@@ -44,7 +44,8 @@ Project maintainers can be found by searching for the GitHub team <repo>-maintai
 
 ## Code of Conduct
 
-TODO
+The code of conduct is overseen by the Emporous project maintainers.
+Possible code of conduct violations should be submitted to the project maintainers through this [Google form](https://docs.google.com/forms/d/e/1FAIpQLSd-twhszkTzYtPU0sl49VxQySeOBPxOQhTaKPKzJiY4rOyTHw/viewform?usp=sharing).
 
 ## Licenses
 

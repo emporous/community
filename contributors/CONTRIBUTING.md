@@ -16,7 +16,7 @@ First contributions could be:
 
 - Improving the documentation
 - Adding test coverage
-- Try out issues that have the label `good first issue`
+- Trying out issues that have the label `good first issue`
 
 ### Contributing to Projects
 
@@ -38,7 +38,7 @@ At least one reviewer from the `CODEOWNERS` file must approve to merge a pull re
 
 - Write clear and meaningful git commit messages.
 - Follow the conventional commit [specification](https://www.conventionalcommits.org/en/v1.0.0/).
-- When applicable, breaking units of works into separate commits or pull requests.
+- When applicable, break units of works into separate commits or pull requests.
 - Each pull request should be tied to a GitHub issue and specified in the pull request description.
 - If a change is small, please squash commits for a cleaner history.
 
